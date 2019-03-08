@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.notice">
+
+	<!-- 글쓰기 -->
+	<insert id="write">
+		INSERT INTO notice
+		(nnum,ntitle,nhit,ncontent,ngroup,nstep,nindent)
+		values(noticenum_seq.nextval,#{ntitle},0,#{ncontent},noticenum_seq.currval,0,0)
+	</insert>
+
+	<!-- 글읽기 -->
+	<select id="view" resultType="noticeDTO">
+		SELECT
+		nnum,ntitle,ncdate,nudate,
+		nhit,ncontent,ngroup,nstep,nindent
+		FROM notice where nnum=#{nnum}
+	</select>
+
+	<!-- 글읽기:조회수증가 -->
+	<update id="updateHit">
+		update notice set nhit = nhit + 1
+		where nnum=#{nnum}
+	</update>
+
+	<!-- 글수정 -->
+	<update id="modify">
+		update notice set ntitle=#{ntitle},nudate=sysdate,
+		ncontent=#{ncontent}
+		where nnum=#{nnum} 	
+	</update>
+
+	<!-- 글삭제 -->
+	<delete id="delete">
+		delete from notice where nnum=#{nnum}
+	</delete>
+
+	<!-- 원글가져오기 -->
+	<select id="replyView" resultType="noticeDTO">
+		SELECT
+		nnum,ntitle,ncdate,nudate,
+		nhit,ncontent,ngroup,nstep,nindent
+		FROM notice
+		where nnum=#{nnum}
+	</select>
+
+	<!-- 답글등록시 -->
+	<!-- 1)이전답글 step 업데이트 -->
+	<update id="updateStep">
+		update notice set nstep=nstep+1 where ngroup=#{ngroup} and nstep>#{nstep}
+	</update>
+
+	<!-- 2)답글등록 -->
+	<insert id="reply">
+		INSERT INTO notice
+		(nnum,ntitle,nhit,ncontent,ngroup,nstep,nindent)
+		values(noticenum_seq.nextval,
+		#{ntitle},
+		0,
+		#{ncontent},
+		#{ngroup},
+		#{nstep}+1,
+		#{nindent}+1)
+	</insert>
+
+	<!-- 게시글 총계 -->
+	<select id="totalRec" resultType="Integer">
+		SELECT count(*) totalRec 
+		from notice
+	</select>
+	
+	<!-- 글목록전체 -->
+	<select id="listOld" resultType="noticeDTO">
+		SELECT nnum,ntitle,ncdate,nudate,
+			     nhit,ncontent,ngroup,nstep,nindent 
+		  FROM (select * from notice order by ngroup desc, nstep asc) 
+	</select>
+	
+	
+		<!-- 글목록전체 -->
+	<select id="listNew" resultMap="noticeMap">
+		SELECT nnum,ntitle,ncdate,nudate,
+			     nhit,ncontent,ngroup,nstep,nindent 
+		  FROM (select * from notice order by ngroup desc, nstep asc) 
+	</select>
+	
+	
+	<!-- 글목록 map형식 요청페이지 -->
+	<resultMap type="noticeDTO" id="noticeMap">
+		<result column="nnum" property="nnum" />
+		<result column="ntitle" property="ntitle" />
+		<result column="ncdate" property="ncdate" />
+		<result column="nudate" property="nudate" />
+		<result column="nhit" property="nhit" />
+		<result column="ncontent" property="ncontent" />
+		<result column="ngroup" property="ngroup" />
+		<result column="nstep" property="nstep" />
+		<result column="nindent" property="nindent" />
+	</resultMap>
+	
+	
+	
+	<!-- 글목록 요청페이지 -->
+	<select id="list" resultType="noticeDTO">
+		select t2.* 
+		from (select row_number() over (order by ngroup desc, nstep asc) as num,t1.* 
+				    from notice t1 ) t2 
+		where num between #{startRec} and #{endRec}
+	
+	</select>
+
+	<!-- 검색목록  -->
+	<select id="flist" resultType="noticeDTO">
+		 select t2.*  
+		 from (select row_number() over (order by ngroup desc, nstep asc) as num, t1.*  
+		       from notice t1  
+		       where nnum > 0  
+	<bind name="keyword" value="'%'+keyword+'%'"/>
+		<choose>
+			<!-- 제목+내용 -->
+			<when test="searchType == 'TC'.toString()">
+				and ntitle like #{keyword} or ncontent like #{keyword}
+			</when>
+			<!-- 제목 -->
+			<when test="searchType == 'T'.toString()">
+				and ntitle like #{keyword} 
+			</when>
+			<!-- 내용 -->	
+			<otherwise>			
+				and ncontent like #{keyword}
+			</otherwise>		
+		</choose>
+		       ) t2  
+		 where num between #{startRecord} and #{endRecord}  
+	</select>
+
+
+	<!-- 검색총계 -->
+	<select id="searchTotalRec" resultType="Integer">
+		 select count(*) totalRec  
+		 from (select row_number() over (order by ngroup desc, nstep asc) as num, t1.*  
+		       from notice t1  
+		       where nnum > 0  
+	<bind name="keyword" value="'%'+keyword+'%'"/>
+		<choose>
+			<!-- 제목+내용 -->
+			<when test="searchType == 'TC'.toString()">
+				and ntitle like #{keyword} or ncontent like #{keyword}
+			</when>
+			<!-- 제목 -->
+			<when test="searchType == 'T'.toString()">
+				and ntitle like #{keyword} 
+			</when>
+			<!-- 내용 -->
+			<otherwise>	
+				and ncontent like #{keyword}
+			</otherwise>		
+		</choose>
+		       ) t2  
+	</select>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<context:component-scan base-package="com.kh.myapp"/>
+	<context:property-placeholder location="classpath:/config/db.properties" />	
+	
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+<!-- private static BasicDataSource dataSource = new BasicDataSource();
+	private static DataBaseUtil instance = new DataBaseUtil();	
+	
+	private static final String driverName = "oracle.jdbc.driver.OracleDriver";
+	private static final String serverIP = "127.0.0.1";
+	private static final String UserName = "jsp";
+	private static final String UserPass = "jsp"; -->
+	
+<!-- 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:xe"/>
+		<property name="username" value="spring"/>
+		<property name="password" value="spring1234"/>
+	</bean> -->
+	
+<!-- 		<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+		<property name="url" value="jdbc:log4jdbc:oracle:thin:@127.0.0.1:1521:xe"/>
+		<property name="username" value="spring"/>
+		<property name="password" value="spring1234"/>
+	</bean> -->
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean> 
+	
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+	<constructor-arg ref="dataSource"/>	
+	</bean>
+	
+<!-- mybatis -->			
+	<bean id="sqlSessionFactory"	class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:/config/mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath*:/mappers/**/*mapper.xml" />
+	</bean>
+	
+<!-- 	mybatis-spring -->
+	<bean id="sqlSeesion"	class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"/>
+	</bean>
+	
+<!-- com.kh.myapp경로상의 모든 클래스를 스캔하여 인스턴스 자동생성해준다 -->
+	<context:component-scan	base-package="com.kh.myapp">
+  <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+  </context:component-scan>
+	
+	
+	
+
+</beans>
+
+

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.member">
+    <!--회원 등록 -->
+   <insert id="memberInsert" parameterType="com.kh.myapp.member.dto.MemberDTO">
+
+    insert into member (id,pw,tel,nickName,gender,region,birth) 
+		            values(#{id},#{pw},#{tel},#{nickName},#{gender},#{region},#{birth}) 
+                    
+  </insert> 
+  <!-- 회원 수정 -->
+    <update id="memberUpdate" parameterType="com.kh.myapp.member.dto.MemberDTO">
+            update member set tel=#{tel},
+                            nickName=#{nickName},
+                            gender=#{gender},
+                            region=#{region},
+                            birth=#{birth} 
+                            where id=#{id}
+    </update>
+    
+    <!-- 비밀번호 변경 -->
+    <update id="pwUpdate" parameterType="memberDTO">
+    	update member set pw=#{pw} where id=#{id}    
+    </update>
+    
+    <!--회원 삭제 (회원용)-->
+    <delete id="memberDelete" parameterType="String">
+    
+    delete from member where id=#{id} and pw=#{pw}
+    
+    
+    </delete>
+    <!--회원 삭제 (관리자용)-->
+    <delete id="adminmemberDelete" parameterType="String">
+    
+    delete from member where id=#{id}
+      
+    </delete>
+    <!--회원  조회-->
+  <select id="memberSelectOne" parameterType="String" resultType="memberDTO">
+		select id, pw, nickName, gender, region, birth, tel, cdate, udate
+		  from member where id=#{id}    
+  </select>
+    <!--회원 목록 조회-->
+    <select id="memberSelectList" resultType="com.kh.myapp.member.dto.MemberDTO" >
+    select id,pw,nickName,gender,region,birth,tel,cdate,udate
+		from member 
+    
+    </select>
+
+
+		<!--아이디 찾기-->
+		<select id="findid" resultType="memberDTO">
+			 select id from member  
+			 where tel =#{tel} and birth=#{birth}	  	
+		</select>
+		
+		<!--비밀번호 찾기-->
+		<select id="findpw" resultType="memberDTO">
+		 select pw from member  
+		 where id=#{id} and tel =#{tel} and birth=#{birth}	
+		</select>
+
+
+</mapper>

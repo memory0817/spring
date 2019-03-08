@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.rbbs">
+  
+
+		<!-- 댓글등록 -->
+		<insert id="write" parameterType="com.kh.myapp.bbs.dto.RbbsDTO">
+		INSERT INTO replyboard (rnum, bnum, rid, rnickname,rcontent, rgroup)
+		VALUES(RBOARDNUM_SEQ.nextval,#{bnum},#{rid},#{rnickname},#{rcontent},rboardnum_seq.currval)		
+		</insert>
+
+
+		<!-- 댓글수정 -->
+		<update id="modify" parameterType="rbbsDTO">
+		update replyboard set rudate=sysdate, rcontent=#{rcontent} 
+		where rnum=#{rnum}		
+		</update>
+		
+		
+		<!-- 댓글삭제 시작 -->
+		
+		<!-- 댓글존재여부 판단후 참조댓글 없으면 바로삭제 -->
+		<delete id="delete">
+			delete from replyboard where rnum=#{rnum}		
+		</delete>
+		
+		<!-- 댓글존재여부 판단후 참조댓글 있으면 삭제플래그달기 -->
+		<update id="update_isdel">
+			update replyboard set isdel = 'Y' where rnum = #{rnum} 	
+		</update>
+		
+		
+		<!--댓글존재여부판단-->
+		<select id="isReply" resultType="java.lang.Integer">
+		 select count(rnum)
+		  from replyboard
+	   where bnum = (select bnum from replyboard 
+		                where rnum = #{rnum})
+		   and rrnum = #{rnum}	
+		</select>	
+		
+		<!-- 댓글삭제 끝 -->
+		
+		
+		
+		<!-- 호감비호감 -->
+		<update id="goodOrBad" parameterType="java.util.Map">
+			<choose>
+				<!-- 호감 -->
+					<when test="goodOrBad == 'good'">
+						update replyboard set rgood = rgood + 1 where rnum=#{rnum}			
+					</when>
+				<!-- 비호감 -->			
+					<when test="goodOrBad == 'bad'">
+						update replyboard set rbad = rbad + 1 where rnum=#{rnum}			
+					</when>			
+			</choose>	
+		</update>
+
+
+
+
+	<!-- 대댓글 등록 -->
+	<insert id="reply">
+		 INSERT INTO replyboard (rnum, bnum, rid, rnickname, rcontent, rgroup, rstep, rindent, rrnum)  
+		 VALUES(RBOARDNUM_SEQ.nextval,
+		 				#{originDTO.bnum},
+		 				#{rbbsDTO.rid},
+		 				#{rbbsDTO.rnickname},
+		 				#{rbbsDTO.rcontent},
+		 				#{originDTO.rgroup},
+		 				#{originDTO.rstep}+1,
+		 				#{originDTO.rindent}+1,
+		 				#{rbbsDTO.rrnum})  
+	</insert>
+	
+	<!-- 댓글대상 읽어오기 -->
+	<select id="replyView" resultType="rbbsDTO" >
+		select bnum, rgroup, rstep, rindent from replyboard where rnum=#{rrnum}
+	</select>
+
+	<!-- 이전답글 step 업데이트 동일그룹의 댓글중에 동일스텝의 글이 있으면 +1갱신 -->
+	<update id="updateStep" parameterType="java.lang.Integer">
+		update replyboard set rstep=rstep+1 where rgroup = #{rgroup} and rstep > #{rstep}
+	</update>
+
+
+
+	<!-- 댓글총계 -->
+	<select id="replyTotalRec" parameterType="java.lang.String" resultType="java.lang.Integer">
+	select count(*) totalRec from replyboard where bnum=#{bnum}		
+	</select>
+
+	<!-- 댓글 목록 -->
+<!-- 댓글 목록 -->
+	<resultMap type="rbbsDTO" id="rbbsMap">
+			<result column="rnum" property="rnum"/>
+			<result column="bnum" property="bnum"/>
+			<result column="rid" property="rid"/>
+			<result column="rnickname" property="rnickname"/>
+			<result column="rcdate" property="rcdate"/>
+			<result column="rudate" property="rudate"/>
+			<result column="rcontent" property="rcontent"/>
+			<result column="rgood" property="rgood"/>
+			<result column="rbad" property="rbad"/>
+			<result column="rgroup" property="rgroup"/>
+			<result column="rstep" property="rstep"/>
+			<result column="rindent" property="rindent"/>			
+			<result column="isdel" property="isdel"/>
+			<result column="rrnum" property="rrnum"/>		
+		<association property="rrdto" javaType="com.kh.myapp.bbs.dto.RbbsDTO">
+			<result column="rnum_1" property="rnum"/>
+			<result column="bnum_1" property="bnum"/>
+			<result column="rid_1" property="rid"/>
+			<result column="rnickname_1" property="rnickname"/>
+			<result column="rcdate_1" property="rcdate"/>
+			<result column="rudate_1" property="rudate"/>
+			<result column="rcontent_1" property="rcontent"/>			
+			<result column="rgood_1" property="rgood"/>
+			<result column="rbad_1" property="rbad"/>
+			<result column="rgroup_1" property="rgroup"/>
+			<result column="rstep_1" property="rstep"/>
+			<result column="rindent_1" property="rindent"/>
+			<result column="isdel_1" property="isdel"/>
+			<result column="rrnum_1" property="rrnum"/>
+		</association>
+	</resultMap>
+
+	<select id="list" resultMap="rbbsMap">
+		 select x.*, 
+					 y.rnum rnum_1, 
+					 y.bnum bnum_1, 
+					 y.rid rid_1, 
+					 y.rnickname rnickname_1, 
+					 y.rcdate rcdate_1, 
+					 y.rudate rudate_1, 
+					 y.rcontent rcontent_1, 
+					 y.rgood rgood_1, 
+					 y.rbad rbad_1, 
+					 y.rgroup rgroup_1, 
+					 y.rstep rstep_1, 
+					 y.rindent rindent_1, 
+					 y.isdel isdel_1, 
+					 y.rrnum rrnum_1 		
+		  from (select t2.* 
+		          from (select row_number() over (order by rgroup desc, rstep asc) as num,t1.* 
+		                  from replyboard t1 
+		                 where bnum=#{bnum} ) t2 
+		         where num between #{startRec} and #{endRec}) x, 
+		        (select * 
+		           from replyboard 
+		          where bnum=#{bnum} and rnum in ( 
+				                        select distinct t4.rrnum 
+				                          from (select row_number() over 
+				                                        (order by rgroup desc, rstep asc) as num,t3.* 
+				                                  from replyboard t3 
+				                                 where bnum=#{bnum} and rrnum > 0) t4 
+				                         where num between #{startRec} and #{endRec})) y 
+		 where x.rrnum = y.rnum(+) 
+		 order by x.num
+	</select>
+
+
+
+
+</mapper>

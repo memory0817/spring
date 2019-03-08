@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.authority">
+
+<!-- 사용자권한등록 -->
+<insert id="insert">
+ insert into Authorities (seq, id, roleId)
+ values (Authorities_seq.nextval, #{id}, #{roleId} )
+</insert>
+
+<!-- 사용자권한수정 -->
+<update id="update">
+update Authorities set roleId = #{roleId} where seq = #{seq}
+</update>
+
+<!-- 사용자권한삭제 -->
+
+<delete id="delete">
+delete from Authorities where roleId = #{roleId}
+</delete>
+
+
+<!-- 사용자권한 전체 조회 -->
+<select id="list" resultType="AuthorityDTO">
+	select * from Authorities
+</select>
+
+<!-- 사용자권한 조회 -->
+<select id="selectOne" resultType="AuthorityDTO">
+select * from Authorities where id = #{id}
+</select>
+
+
+
+</mapper>
