@@ -8,6 +8,9 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,7 +52,7 @@ public class BbsController {
 	
 	//게시글 등록처리
 	@RequestMapping("/writeOK")
-	public String writeOK(@Valid @ModelAttribute("bbsDTO") BbsDTO bbsDTO, BindingResult result, Model model, HttpSession session) {
+	public String writeOK(@Valid @ModelAttribute("bbsDTO") BbsDTO bbsDTO, @AuthenticationPrincipal MemberDTO mdto, BindingResult result, Model model, HttpSession session) {
 		logger.info("String writeOK 호출됨:" + bbsDTO);
 		
 		int cnt = 0;
@@ -58,7 +61,12 @@ public class BbsController {
 			logger.info(result.toString());
 			return "/bbs/writeForm";
 		}
-		MemberDTO mdto = (MemberDTO)session.getAttribute("user");
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserDetails userDetails = (UserDetails)principal;
+		
+		log.info("case1" + mdto);
+		log.info("case3" + userDetails);
+
 		// 사용자 세션정보가 없는경우
 		if(mdto == null) {
 			return "redirect:/login/loginForm";

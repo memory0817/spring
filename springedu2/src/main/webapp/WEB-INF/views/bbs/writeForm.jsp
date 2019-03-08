@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <jsp:include page="/main_header.jsp" flush="false" />
+
 <style>
 .errmsg, {
 	color: red;
@@ -85,12 +88,15 @@
 
 </script>
 <div class="container">
+<c:set var="user" value="${SPRING_SECURITY_CONTEXT.authentication.principal }" />
 	<div class="table-responsive">
+	<%-- <sec:authentication property="principal" /> --%>
 		<h3 class="text-center p-3 mb-3 bg-white font-weight-bolder">게시글
 			작성</h3>
 		<form:form modelAttribute="bbsDTO" action="/bbs/writeOK" method="post">
 		<form:hidden path="bid" value="${user.id }"/>
 		<form:hidden path="bnickname" value="${user.nickName }"/>
+
 			<table class="table table-sm" summary="게시글 작성">
 				<colgroup>
 					<col width="20%">
@@ -106,7 +112,7 @@
 					</tr>
 					<tr>
 						<th>작성자</th>
-						<td>&nbsp;${user.nickName }(${user.id})
+						<td>&nbsp;${user.nickName }(${user.id })
 						</td>
 					</tr>
 					<tr>
@@ -129,6 +135,7 @@
 				</tbody>
 			</table>
 		</form:form>
+		
 	</div>
 </div>
 <jsp:include page="/main_footer.jsp" flush="false" />

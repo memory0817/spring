@@ -9,25 +9,11 @@
 	 
 	 $("#write").on("click",function(e){
 		 e.preventDefault();
-/* 		 if ${sessionScope.user} == null {
-		     location.href="/login/loginForm";
-		     return; 		 }*/
 
-/*  		 <c:if test="${sessionScope.user eq null}">
-		 		location.href="/login/loginForm";
-		 		return;
-		 </c:if>  */
-		 
- 		var user ="${sessionScope.user == null ? null : sessionScope.user.id}";
- 		 
-		 if(user == null || user == ""){
-			 location.href="/login/loginForm";
-		 	return;
-		 } 
      
 		 location.href="${pageContext.request.contextPath }/bbs/write"; 			 
 		 
-/* 		 $(location).attr('/bbs/write_form'); */
+
 	 });	
 	 
 	 
