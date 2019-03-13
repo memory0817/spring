@@ -10,14 +10,14 @@
 > Back-End
 - JDK 1.8
 - Java 8
-- Tomcat Server 9
+- Tomcat Server 8.5
 - Spring 5.1.4 
 - Mybatis 3.4.6 
-- My SQL
+- My SQL 5.7
 - Maven 2.9
 
 > Front-End
-- Bootstrap4
+- Bootstrap 4
 - Ajax
 - Restful API
 
