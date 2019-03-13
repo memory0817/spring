@@ -12,3 +12,4 @@
 - ID,PW 찾기<br>
 - 게시판 CRUD<br>
 - 댓글 CRUD<br>
+- 회원 권한주기 <br>
