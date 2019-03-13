@@ -8,10 +8,13 @@
 
 # 개발환경
 > Back-End
-- JDK 1.7
+- JDK 1.8
+- Java 8
 - Tomcat Server 9
-- Spring, Mybatis, My SQL 연결 설정
-- Maven 라이브러리 설정
+- Spring 5.1.4 
+- Mybatis 3.4.6 
+- My SQL
+- Maven 2.9
 
 # 화면구성
 - Bootstrap4
