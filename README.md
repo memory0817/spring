@@ -16,7 +16,7 @@
 - My SQL
 - Maven 2.9
 
-# 화면구성
+> Front-End
 - Bootstrap4
 - Ajax
 - Restful API
