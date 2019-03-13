@@ -8,16 +8,16 @@
 
 # 개발환경
 > Back-End
-- JDK 1.8
-- Java 8
-- Tomcat Server 8.5
-- Spring 5.1.4 
-- Mybatis 3.4.6 
-- My SQL 5.7
-- Maven 2.9
+- JDK 
+- Java
+- Tomcat Server
+- Spring  
+- Mybatis  
+- oracle
+- Maven
 
 > Front-End
-- Bootstrap 4
+- Bootstrap 
 - Ajax
 - Restful API
 
