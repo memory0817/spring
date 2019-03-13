@@ -27,5 +27,7 @@
 - 회원 권한주기 <br>
 
 # 사용예제
-[동영상시연](https://youtu.be/naazH8G1wG0)
+[동영상시연](https://youtu.be/7MHDjh20HNs)
+
+# 정보
 
