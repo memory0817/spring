@@ -27,3 +27,4 @@
 - 회원 권한주기 <br>
 
 # 사용예제
+https://youtu.be/naazH8G1wG0
