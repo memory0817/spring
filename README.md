@@ -29,5 +29,4 @@
 # 사용예제
 [동영상시연](https://youtu.be/7MHDjh20HNs)
 
-# 정보
 
