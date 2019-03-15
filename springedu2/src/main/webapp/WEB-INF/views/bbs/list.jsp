@@ -21,7 +21,7 @@
 	 //검색버튼 클릭
 	 $("#btn1").on("click",function(){
 		 
-		 if($("#keyword").val().trim().length == 0){
+		 if($("#keyword2").val().trim().length == 0){
 			 alert("검색어를 입력하세요!");
 			 return;
 			 
@@ -151,7 +151,7 @@
             <option value="I" <c:out value="${pc.searchType == 'I' ? 'selected' : ''}"/>>아이디</option>
           </select>
           <input class="col-sm-5 form-control form-control-sm px-1 mr-1" type="search" 
-          id="keyword" name="keyword" value="${pc.keyword}" placeholder="검색어를 입력하세요">
+          id="keyword2" name="keyword" value="${pc.keyword}" placeholder="검색어를 입력하세요">
           <button id="btn1" type="button" class="btn btn-sm btn-outline-dark px-2 mx-0">검색</button>
      			 </div>
         </form>
